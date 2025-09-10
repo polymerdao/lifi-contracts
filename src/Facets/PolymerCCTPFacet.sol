@@ -136,6 +136,7 @@ contract PolymerCCTPFacet is ILiFi, ReentrancyGuard, SwapperV2, Validatable {
         
         // Emit Li.Fi standard event
         emit LiFiTransferStarted(
+            BridgeData(
             _bridgeData.transactionId,
             _bridgeData.bridge,
             _bridgeData.integrator,
@@ -146,6 +147,7 @@ contract PolymerCCTPFacet is ILiFi, ReentrancyGuard, SwapperV2, Validatable {
             _bridgeData.destinationChainId,
             _bridgeData.hasSourceSwaps,
             _bridgeData.hasDestinationCall
+            )
         );
         
         // Emit Polymer-specific event for tracking
