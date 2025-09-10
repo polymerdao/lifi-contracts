@@ -6,7 +6,7 @@ interface IPolymerCCTP {
         uint256 amount,
         uint32 destinationDomain,
         bytes32 mintRecipient
-    ) external payable returns (uint64 nonce);
+    ) external payable;
     
     function calculateFee(uint256 amount, uint32 domain) external view returns (uint256);
     
