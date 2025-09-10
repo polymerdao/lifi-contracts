@@ -8,6 +8,7 @@ import {ILiFi} from "lifi/Interfaces/ILiFi.sol";
 import {LibSwap} from "lifi/Libraries/LibSwap.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {PolymerCCTP} from "lifi/Facets/PolymerCCTP.sol";
+import {PolymerCCTPData} from "lifi/Interfaces/IPolymerCCTP.sol";
 
 contract CallPolymerCCTPFacet is Script {
     function run() external payable {
@@ -44,8 +45,12 @@ contract CallPolymerCCTPFacet is Script {
         });
 
         // Prepare Polymer-specific data
-        PolymerCCTPFacet.PolymerCCTPData memory polymerData =
-            PolymerCCTPFacet.PolymerCCTPData({destinationDomain: destinationDomain});
+        PolymerCCTPData memory polymerData = PolymerCCTPData({
+            destinationDomain: destinationDomain,
+            mintRecipient: receiver,
+            tokenFee: 0,
+            minFinalityThreshold: 0
+        });
 
         console2.log("Calling startBridgeTokensViaPolymerCCTP...");
         console2.log("Amount:", amount);

@@ -2,7 +2,7 @@
 pragma solidity ^0.8.17;
 
 import {ILiFi} from "../Interfaces/ILiFi.sol";
-import {IPolymerCCTP} from "../Interfaces/IPolymerCCTP.sol";
+import {IPolymerCCTP, PolymerCCTPData } from "../Interfaces/IPolymerCCTP.sol";
 import {LibAsset, IERC20} from "../Libraries/LibAsset.sol";
 import {LibSwap} from "../Libraries/LibSwap.sol";
 import {ReentrancyGuard} from "../Helpers/ReentrancyGuard.sol";
@@ -15,25 +15,9 @@ import {InvalidConfig} from "../Errors/GenericErrors.sol";
 /// @notice Provides functionality for bridging USDC through Polymer CCTP
 /// @custom:version 1.0.0
 contract PolymerCCTPFacet is ILiFi, ReentrancyGuard, SwapperV2, Validatable {
-    /// Storage ///
-
     IPolymerCCTP public immutable polymerCCTP;
     address public immutable usdc;
 
-    /// Types ///
-
-    /// @param destinationDomain CCTP destination domain
-    struct PolymerCCTPData {
-        uint32 destinationDomain;
-    }
-
-    /// Events ///
-
-    event PolymerCCTPBridgeStarted(
-        bytes32 indexed transactionId, uint32 indexed destinationDomain, bytes32 indexed mintRecipient, uint256 amount
-    );
-
-    /// Constructor ///
 
     /// @notice Initialize the facet with PolymerCCTP contract address
     /// @param _polymerCCTP The address of the PolymerCCTP contract
@@ -45,8 +29,6 @@ contract PolymerCCTPFacet is ILiFi, ReentrancyGuard, SwapperV2, Validatable {
 
         if (usdc == address(0)) revert InvalidConfig();
     }
-
-    /// External Methods ///
 
     /// @notice Bridges USDC via PolymerCCTP
     /// @param _bridgeData The core bridge data
@@ -94,9 +76,6 @@ contract PolymerCCTPFacet is ILiFi, ReentrancyGuard, SwapperV2, Validatable {
     /// @param _bridgeData The core bridge data
     /// @param _polymerData Data specific to PolymerCCTP
     function _startBridge(ILiFi.BridgeData memory _bridgeData, PolymerCCTPData memory _polymerData) private {
-        // Convert receiver address to bytes32 format for CCTP
-        bytes32 mintRecipient = bytes32(uint256(uint160(_bridgeData.receiver)));
-
         // Deposit tokens from user if not already deposited from swaps
         if (!LibAsset.isNativeAsset(_bridgeData.sendingAssetId)) {
             LibAsset.depositAsset(_bridgeData.sendingAssetId, _bridgeData.minAmount);
@@ -107,7 +86,7 @@ contract PolymerCCTPFacet is ILiFi, ReentrancyGuard, SwapperV2, Validatable {
 
         // Execute unrestricted bridge (anyone can complete on destination)
         // Forward any ETH sent as gas fees to the PolymerCCTP contract
-        polymerCCTP.bridgeUSDC{value: msg.value}(_bridgeData.minAmount, _polymerData.destinationDomain, mintRecipient);
+        polymerCCTP.bridgeUSDC{value: msg.value}(_bridgeData.minAmount, _polymerData);
 
         // Emit Li.Fi standard event
         emit LiFiTransferStarted(
@@ -125,9 +104,5 @@ contract PolymerCCTPFacet is ILiFi, ReentrancyGuard, SwapperV2, Validatable {
             )
         );
 
-        // Emit Polymer-specific event for tracking
-        emit PolymerCCTPBridgeStarted(
-            _bridgeData.transactionId, _polymerData.destinationDomain, mintRecipient, _bridgeData.minAmount
-        );
     }
 }

@@ -4,6 +4,7 @@ pragma solidity ^0.8.17;
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import {PolymerCCTPData} from "../Interfaces/IPolymerCCTP.sol";
 import "../Interfaces/ITokenMessenger.sol";
 import "../Interfaces/IMessageTransmitter.sol";
 
@@ -27,10 +28,9 @@ contract PolymerCCTP is ReentrancyGuard {
     uint256 public constant MAX_FEE_BPS = 100; // 1%
     uint256 public constant BPS_DENOMINATOR = 10000;
 
-    event CCTPTransferInitiated(
-        address indexed sender, bytes32 indexed recipient, uint32 indexed destinationDomain, uint256 amount, uint256 fee
+    event PolymerCCTPBridgeStarted(
+        uint32 indexed destinationDomain, address indexed mintRecipient, uint256 amount, uint32 minFinalityThreshold, uint256 tokenFee 
     );
-
     event GasFeePayment(address indexed payer, uint32 indexed destinationDomain, uint256 gasFeePaid);
 
     event FeeUpdated(uint32 domain, uint256 fee);
@@ -55,47 +55,43 @@ contract PolymerCCTP is ReentrancyGuard {
         feeCollector = _guardian;
     }
 
-    function bridgeUSDC(uint256 amount, uint32 destinationDomain, bytes32 mintRecipient)
+    function bridgeUSDC(uint256 amount, PolymerCCTPData memory data)
         external
         payable
         nonReentrant
     {
         require(amount > 0, "Invalid amount");
-        require(mintRecipient != bytes32(0), "Invalid recipient");
+        require(data.mintRecipient != address(0), "Invalid recipient");
 
-        uint256 fee = calculateFee(amount, destinationDomain);
-        uint256 amountAfterFee = amount - fee;
+        IERC20(usdc).safeTransferFrom(msg.sender, address(this), amount + data.tokenFee);
 
-        IERC20(usdc).safeTransferFrom(msg.sender, address(this), amount);
-
-        if (fee > 0 && feeCollector != address(0)) {
-            IERC20(usdc).safeTransfer(feeCollector, fee);
+        if (data.tokenFee > 0 && feeCollector != address(0)) {
+            IERC20(usdc).safeTransfer(feeCollector, data.tokenFee);
         }
 
-        IERC20(usdc).safeApprove(tokenMessenger, amountAfterFee);
+        IERC20(usdc).safeApprove(tokenMessenger, amount);
+        bytes32 mintRecipient = bytes32(uint256(uint160(data.mintRecipient)));
 
         ITokenMessenger(tokenMessenger).depositForBurn(
-            amountAfterFee,
-            destinationDomain,
+            amount,
+            data.destinationDomain,
             mintRecipient,
             usdc,
             bytes32(0), // Unrestricted caller
             0, // maxFee - 0 means no fee limit
-            0 // minFinalityThreshold - use default
+            data.minFinalityThreshold // minFinalityThreshold - use default
+        );
+       
+        // Emit Polymer-specific event for tracking
+        emit PolymerCCTPBridgeStarted(
+             data.destinationDomain, data.mintRecipient, amount,  data.minFinalityThreshold, data.tokenFee 
         );
 
-        emit CCTPTransferInitiated(msg.sender, mintRecipient, destinationDomain, amountAfterFee, fee);
 
         // Emit gas fee payment event if ETH was sent
         if (msg.value > 0) {
-            emit GasFeePayment(msg.sender, destinationDomain, msg.value);
+            emit GasFeePayment(msg.sender, data.destinationDomain, msg.value);
         }
-    }
-
-    function calculateFee(uint256 amount, uint32 domain) public view returns (uint256) {
-        uint256 feeBps = feePerDomain[domain];
-        if (feeBps == 0) return 0;
-        return (amount * feeBps) / BPS_DENOMINATOR;
     }
 
     function setFeeForDomain(uint32 domain, uint256 feeBps) external onlyGuardian {
