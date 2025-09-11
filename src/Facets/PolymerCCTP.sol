@@ -63,10 +63,10 @@ contract PolymerCCTP is ReentrancyGuard {
         require(amount > 0, "Invalid amount");
         require(data.mintRecipient != address(0), "Invalid recipient");
 
-        IERC20(usdc).safeTransferFrom(msg.sender, address(this), amount + data.tokenFee);
+        IERC20(usdc).safeTransferFrom(msg.sender, address(this), amount + data.polymerTokenFee);
 
-        if (data.tokenFee > 0 && feeCollector != address(0)) {
-            IERC20(usdc).safeTransfer(feeCollector, data.tokenFee);
+        if (data.polymerTokenFee > 0 && feeCollector != address(0)) {
+            IERC20(usdc).safeTransfer(feeCollector, data.polymerTokenFee);
         }
 
         IERC20(usdc).safeApprove(tokenMessenger, amount);
@@ -78,13 +78,13 @@ contract PolymerCCTP is ReentrancyGuard {
             mintRecipient,
             usdc,
             bytes32(0), // Unrestricted caller
-            0, // maxFee - 0 means no fee limit
+            data.maxCCTPFee, // maxFee - 0 means no fee limit
             data.minFinalityThreshold // minFinalityThreshold - use default
         );
        
         // Emit Polymer-specific event for tracking
         emit PolymerCCTPBridgeStarted(
-             data.destinationDomain, data.mintRecipient, amount,  data.minFinalityThreshold, data.tokenFee 
+             data.destinationDomain, data.mintRecipient, amount,  data.minFinalityThreshold, data.polymerTokenFee
         );
 
 

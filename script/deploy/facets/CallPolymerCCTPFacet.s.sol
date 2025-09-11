@@ -17,6 +17,7 @@ contract CallPolymerCCTPFacet is Script {
         uint32 destinationDomain = uint32(vm.envUint("DESTINATION_DOMAIN"));
         address receiver = vm.addr(deployerPrivateKey);
         uint256 amount = uint256(1000);
+        uint32 maxCCTPFee = uint32(vm.envOr("MAX_CCTP_FEE", uint256(100)));
 
         vm.startBroadcast(deployerPrivateKey);
 
@@ -48,8 +49,9 @@ contract CallPolymerCCTPFacet is Script {
         PolymerCCTPData memory polymerData = PolymerCCTPData({
             destinationDomain: destinationDomain,
             mintRecipient: receiver,
-            tokenFee: 0,
-            minFinalityThreshold: 0
+            polymerTokenFee: 0,
+            minFinalityThreshold: 0,
+            maxCCTPFee: maxCCTPFee
         });
 
         console2.log("Calling startBridgeTokensViaPolymerCCTP...");

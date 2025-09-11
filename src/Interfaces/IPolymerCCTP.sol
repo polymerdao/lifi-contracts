@@ -2,7 +2,8 @@
 pragma solidity ^0.8.17;
 
 struct PolymerCCTPData {
-    uint256 tokenFee;
+    uint256 polymerTokenFee;
+    uint256 maxCCTPFee;
     address mintRecipient;
     uint32 destinationDomain;
     uint32 minFinalityThreshold;
