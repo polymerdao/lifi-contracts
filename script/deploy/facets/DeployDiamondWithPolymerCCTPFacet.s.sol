@@ -7,7 +7,6 @@ import {DiamondCutFacet} from "lifi/Facets/DiamondCutFacet.sol";
 import {PolymerCCTPFacet} from "lifi/Facets/PolymerCCTPFacet.sol";
 import {IPolymerCCTP} from "lifi/Interfaces/IPolymerCCTP.sol";
 import {DeployScriptBase} from "./utils/DeployScriptBase.sol";
-import {PolymerCCTP} from "lifi/Facets/PolymerCCTP.sol";
 import {LibDiamond} from "lifi/Libraries/LibDiamond.sol";
 
 contract DeployDiamondWithPolymerCCTPFacet is Script {
@@ -31,14 +30,8 @@ contract DeployDiamondWithPolymerCCTPFacet is Script {
         LiFiDiamond diamond = new LiFiDiamond(vm.addr(deployerPrivateKey), address(diamondCutFacet));
         console2.log("LiFiDiamond deployed at:", address(diamond));
 
-        // Deploy PolymerCCTP
-        console2.log("Deploying PolymerCCTP...");
-        PolymerCCTP polymerCCTP = new PolymerCCTP(tokenMessenger, usdc, guardian);
-        console2.log("PolymerCCTP deployed at:", address(polymerCCTP));
-
-        // Deploy PolymerCCTPFacet
         console2.log("Deploying PolymerCCTPFacet...");
-        PolymerCCTPFacet polymerFacet = new PolymerCCTPFacet(IPolymerCCTP(address(polymerCCTP)));
+        PolymerCCTPFacet polymerFacet = new PolymerCCTPFacet(tokenMessenger, usdc);
         console2.log("PolymerCCTPFacet deployed at:", address(polymerFacet));
 
         // Add PolymerCCTPFacet to diamond
