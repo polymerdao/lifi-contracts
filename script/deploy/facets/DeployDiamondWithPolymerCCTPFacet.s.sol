@@ -45,8 +45,6 @@ contract DeployDiamondWithPolymerCCTPFacet is Script {
         console2.log("Adding PolymerCCTPFacet to diamond...");
         bytes4[] memory selectors = new bytes4[](3);
         selectors[0] = PolymerCCTPFacet.startBridgeTokensViaPolymerCCTP.selector;
-        selectors[1] = PolymerCCTPFacet.swapAndStartBridgeTokensViaPolymerCCTP.selector;
-        // selectors[2] = bytes4(keccak256("usdc()"));
 
         LibDiamond.FacetCut[] memory cuts = new LibDiamond.FacetCut[](1);
         cuts[0] = LibDiamond.FacetCut({

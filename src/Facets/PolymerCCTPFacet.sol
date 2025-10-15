@@ -46,30 +46,6 @@ contract PolymerCCTPFacet is ILiFi, ReentrancyGuard, SwapperV2, Validatable {
         _startBridge(_bridgeData, _polymerData);
     }
 
-    /// @notice Performs a swap before bridging via PolymerCCTP
-    /// @param _bridgeData The core bridge data
-    /// @param _swapData Array of swap instructions
-    /// @param _polymerData Data specific to PolymerCCTP
-    function swapAndStartBridgeTokensViaPolymerCCTP(
-        ILiFi.BridgeData memory _bridgeData,
-        LibSwap.SwapData[] calldata _swapData,
-        PolymerCCTPData calldata _polymerData
-    )
-        external
-        payable
-        nonReentrant
-        refundExcessNative(payable(msg.sender))
-        validateBridgeData(_bridgeData)
-        onlyAllowSourceToken(_bridgeData, usdc)
-        containsSourceSwaps(_bridgeData)
-        doesNotContainDestinationCalls(_bridgeData)
-    {
-        _bridgeData.minAmount =
-            _depositAndSwap(_bridgeData.transactionId, _bridgeData.minAmount, _swapData, payable(msg.sender));
-
-        _startBridge(_bridgeData, _polymerData);
-    }
-
     /// Private Methods ///
 
     /// @dev Performs the actual bridging logic
