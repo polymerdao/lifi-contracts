@@ -7,6 +7,7 @@ import {PolymerCCTPFacet} from "lifi/Facets/PolymerCCTPFacet.sol";
 import {ILiFi} from "lifi/Interfaces/ILiFi.sol";
 import {LibSwap} from "lifi/Libraries/LibSwap.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {PolymerCCTP} from "lifi/Facets/PolymerCCTP.sol";
 import {PolymerCCTPData} from "lifi/Interfaces/IPolymerCCTP.sol";
 
 contract CallPolymerCCTPFacet is Script {
@@ -17,7 +18,6 @@ contract CallPolymerCCTPFacet is Script {
         address receiver = vm.addr(deployerPrivateKey);
         uint256 amount = uint256(1000);
         uint32 maxCCTPFee = uint32(vm.envOr("MAX_CCTP_FEE", uint256(100)));
-        uint32 minFinalityThreshold = uint32(vm.envOr("MIN_FINALITY_THRESHOLD", uint256(0)));
 
         vm.startBroadcast(deployerPrivateKey);
 
@@ -47,8 +47,11 @@ contract CallPolymerCCTPFacet is Script {
 
         // Prepare Polymer-specific data
         PolymerCCTPData memory polymerData = PolymerCCTPData({
-            minFinalityThreshold: minFinalityThreshold,
-            maxFee: maxCCTPFee
+            destinationDomain: destinationDomain,
+            mintRecipient: receiver,
+            polymerTokenFee: 0,
+            minFinalityThreshold: 0,
+            maxCCTPFee: maxCCTPFee
         });
 
         console2.log("Calling startBridgeTokensViaPolymerCCTP...");
@@ -57,7 +60,7 @@ contract CallPolymerCCTPFacet is Script {
         console2.log("Receiver:", receiver);
 
         // Call the bridge function
-        polymerFacet.startBridgeTokensViaPolymerCCTP(bridgeData, polymerData);
+        polymerFacet.startBridgeTokensViaPolymerCCTP{value: msg.value}(bridgeData, polymerData);
 
         console2.log("Bridge transaction initiated successfully");
 

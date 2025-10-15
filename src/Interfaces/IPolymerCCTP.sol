@@ -1,9 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-struct PolymerCCTPData{
-    uint32 minFinalityThreshold; // minFinalityThreshold - currently used to decide whether or not to use fast path 
-    uint32 maxFee; // max fee pased onto cctp's tokenMessenger
+struct PolymerCCTPData {
+    uint256 polymerTokenFee;
+    uint256 maxCCTPFee;
+    address mintRecipient;
+    uint32 destinationDomain;
+    uint32 minFinalityThreshold;
 }
 
 interface IPolymerCCTP {
