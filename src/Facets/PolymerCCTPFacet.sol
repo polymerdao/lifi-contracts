@@ -62,7 +62,7 @@ contract PolymerCCTPFacet is IPolymerCCTPFacet, ILiFi, ReentrancyGuard, SwapperV
 
         // TODO: Do we need this check if it's always going to be usdc?
         LibAsset.depositAsset(_bridgeData.sendingAssetId, _bridgeData.minAmount );
-        LibAsset.transferFromERC20( usdc,  msg.sender, polymerFeeReceiver,_bridgeData.minAmount );
+        LibAsset.transferFromERC20( usdc,  msg.sender, polymerFeeReceiver, _polymerData.polymerTokenFee );
 
 
         // TODO we don't need to use safe approve here?
@@ -81,7 +81,10 @@ contract PolymerCCTPFacet is IPolymerCCTPFacet, ILiFi, ReentrancyGuard, SwapperV
             _polymerData.minFinalityThreshold // minFinalityThreshold - use default
         );
 
+        emit PolymerCCTPFeeSent( _bridgeData.minAmount, _polymerData.polymerTokenFee, _polymerData.minFinalityThreshold);
+
         // Emit Li.Fi standard event
+        // TODO: Check - do we need to emit this event? 
         emit LiFiTransferStarted(
             BridgeData(
                 _bridgeData.transactionId,

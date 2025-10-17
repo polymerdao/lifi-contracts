@@ -20,6 +20,7 @@ contract CallPolymerCCTPFacet is Script {
         uint32 maxCCTPFee = uint32(vm.envOr("MAX_CCTP_FEE", uint256(100)));
         uint32 minFinalityThreshold = uint32(vm.envOr("MIN_FINALITY_THRESHOLD", uint256(0)));
 
+        console2.log("Diamond Proxy address:", diamondAddress);
         // Cast diamond to PolymerCCTPFacet to call its functions
         PolymerCCTPFacet polymerFacet = PolymerCCTPFacet(diamondAddress);
         address usdcAddress = vm.envAddress("USDC");
