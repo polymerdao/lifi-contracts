@@ -7,7 +7,6 @@ import {PolymerCCTPFacet} from "lifi/Facets/PolymerCCTPFacet.sol";
 import {ILiFi} from "lifi/Interfaces/ILiFi.sol";
 import {LibSwap} from "lifi/Libraries/LibSwap.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {PolymerCCTP} from "lifi/Facets/PolymerCCTP.sol";
 import {PolymerCCTPData} from "lifi/Interfaces/IPolymerCCTP.sol";
 
 contract CallPolymerCCTPFacet is Script {
@@ -17,19 +16,21 @@ contract CallPolymerCCTPFacet is Script {
         uint32 destinationDomain = uint32(vm.envUint("DESTINATION_DOMAIN"));
         address receiver = vm.addr(deployerPrivateKey);
         uint256 amount = uint256(1000);
+        uint256 polymerTokenFee = uint256(10);
         uint32 maxCCTPFee = uint32(vm.envOr("MAX_CCTP_FEE", uint256(100)));
-
-        vm.startBroadcast(deployerPrivateKey);
+        uint32 minFinalityThreshold = uint32(vm.envOr("MIN_FINALITY_THRESHOLD", uint256(0)));
 
         // Cast diamond to PolymerCCTPFacet to call its functions
         PolymerCCTPFacet polymerFacet = PolymerCCTPFacet(diamondAddress);
+        address usdcAddress = vm.envAddress("USDC");
 
         // Get USDC address from the PolymerCCTPFacet
-        address usdcAddress = vm.envAddress("USDC");
         console2.log("USDC address:", usdcAddress);
 
+        vm.startBroadcast(deployerPrivateKey);
+
         // Approve USDC spending
-        IERC20(usdcAddress).approve(diamondAddress, amount);
+        IERC20(usdcAddress).approve(diamondAddress, amount + polymerTokenFee);
 
         // Prepare bridge data
         ILiFi.BridgeData memory bridgeData = ILiFi.BridgeData({
@@ -47,11 +48,10 @@ contract CallPolymerCCTPFacet is Script {
 
         // Prepare Polymer-specific data
         PolymerCCTPData memory polymerData = PolymerCCTPData({
-            destinationDomain: destinationDomain,
-            mintRecipient: receiver,
-            polymerTokenFee: 0,
-            minFinalityThreshold: 0,
-            maxCCTPFee: maxCCTPFee
+            polymerTokenFee: polymerTokenFee,
+            maxCCTPFee: maxCCTPFee,
+            minFinalityThreshold: minFinalityThreshold,
+            nonEvmAddress: bytes32(0)
         });
 
         console2.log("Calling startBridgeTokensViaPolymerCCTP...");
@@ -60,11 +60,10 @@ contract CallPolymerCCTPFacet is Script {
         console2.log("Receiver:", receiver);
 
         // Call the bridge function
-        polymerFacet.startBridgeTokensViaPolymerCCTP{value: msg.value}(bridgeData, polymerData);
+        polymerFacet.startBridgeTokensViaPolymerCCTP(bridgeData, polymerData);
 
         console2.log("Bridge transaction initiated successfully");
 
         vm.stopBroadcast();
     }
-
 }

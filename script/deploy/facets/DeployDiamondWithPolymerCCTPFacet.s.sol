@@ -5,19 +5,17 @@ import {Script, console2} from "forge-std/Script.sol";
 import {LiFiDiamond} from "lifi/LiFiDiamond.sol";
 import {DiamondCutFacet} from "lifi/Facets/DiamondCutFacet.sol";
 import {PolymerCCTPFacet} from "lifi/Facets/PolymerCCTPFacet.sol";
-import {IPolymerCCTP} from "lifi/Interfaces/IPolymerCCTP.sol";
 import {DeployScriptBase} from "./utils/DeployScriptBase.sol";
-import {PolymerCCTP} from "lifi/Facets/PolymerCCTP.sol";
 import {LibDiamond} from "lifi/Libraries/LibDiamond.sol";
 
 contract DeployDiamondWithPolymerCCTPFacet is Script {
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
 
-        // Read PolymerCCTP constructor arguments from environment
+        // Read PolymerCCTPFacet constructor arguments from environment
         address tokenMessenger = vm.envAddress("TOKEN_MESSENGER");
         address usdc = vm.envAddress("USDC");
-        address guardian = vm.addr(deployerPrivateKey);
+        address polymerFeeRecipient = vm.envAddress("POLYMER_FEE_RECIPIENT");
 
         vm.startBroadcast(deployerPrivateKey);
 
@@ -31,24 +29,19 @@ contract DeployDiamondWithPolymerCCTPFacet is Script {
         LiFiDiamond diamond = new LiFiDiamond(vm.addr(deployerPrivateKey), address(diamondCutFacet));
         console2.log("LiFiDiamond deployed at:", address(diamond));
 
-        // Deploy PolymerCCTP
-        console2.log("Deploying PolymerCCTP...");
-        PolymerCCTP polymerCCTP = new PolymerCCTP(tokenMessenger, usdc, guardian);
-        console2.log("PolymerCCTP deployed at:", address(polymerCCTP));
-
         // Deploy PolymerCCTPFacet
         console2.log("Deploying PolymerCCTPFacet...");
-        PolymerCCTPFacet polymerFacet = new PolymerCCTPFacet(IPolymerCCTP(address(polymerCCTP)));
-        console2.log("PolymerCCTPFacet deployed at:", address(polymerFacet));
+        PolymerCCTPFacet polymerCCTPFacet = new PolymerCCTPFacet(tokenMessenger, usdc, polymerFeeRecipient);
+        console2.log("PolymerCCTPFacet deployed at:", address(polymerCCTPFacet));
 
         // Add PolymerCCTPFacet to diamond
         console2.log("Adding PolymerCCTPFacet to diamond...");
-        bytes4[] memory selectors = new bytes4[](3);
+        bytes4[] memory selectors = new bytes4[](1);
         selectors[0] = PolymerCCTPFacet.startBridgeTokensViaPolymerCCTP.selector;
 
         LibDiamond.FacetCut[] memory cuts = new LibDiamond.FacetCut[](1);
         cuts[0] = LibDiamond.FacetCut({
-            facetAddress: address(polymerFacet),
+            facetAddress: address(polymerCCTPFacet),
             action: LibDiamond.FacetCutAction.Add,
             functionSelectors: selectors
         });

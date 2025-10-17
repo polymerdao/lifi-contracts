@@ -1,38 +1,43 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {ReentrancyGuard} from "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import {PolymerCCTPData} from "../Interfaces/IPolymerCCTP.sol";
 import {ILiFi} from "../Interfaces/ILiFi.sol";
-import {IPolymerCCTP, PolymerCCTPData } from "../Interfaces/IPolymerCCTP.sol";
+import {ITokenMessenger} from "../Interfaces/ITokenMessenger.sol";
+import {IPolymerCCTPFacet, PolymerCCTPData} from "../Interfaces/IPolymerCCTP.sol";
+import {LiFiData} from "../Helpers/LiFiData.sol";
 import {LibAsset, IERC20} from "../Libraries/LibAsset.sol";
 import {LibSwap} from "../Libraries/LibSwap.sol";
-import {ReentrancyGuard} from "../Helpers/ReentrancyGuard.sol";
 import {SwapperV2} from "../Helpers/SwapperV2.sol";
 import {Validatable} from "../Helpers/Validatable.sol";
-import {InvalidConfig} from "../Errors/GenericErrors.sol";
 
 /// @title PolymerCCTPFacet
 /// @author LI.FI (https://li.fi)
 /// @notice Provides functionality for bridging USDC through Polymer CCTP
 /// @custom:version 1.0.0
-contract PolymerCCTPFacet is ILiFi, ReentrancyGuard, SwapperV2, Validatable {
-    IPolymerCCTP public immutable polymerCCTP;
+contract PolymerCCTPFacet is IPolymerCCTPFacet, ILiFi, ReentrancyGuard, SwapperV2, Validatable, LiFiData {
+    ITokenMessenger public immutable tokenMessenger;
     address public immutable usdc;
+    address payable public immutable polymerFeeReceiver;
 
+    constructor(address _tokenMessenger, address _usdc, address _polymerFeeReceiver) {
+        // TODO: Do we want to have fee collector here?
 
-    /// @notice Initialize the facet with PolymerCCTP contract address
-    /// @param _polymerCCTP The address of the PolymerCCTP contract
-    constructor(IPolymerCCTP _polymerCCTP) {
-        if (address(_polymerCCTP) == address(0)) revert InvalidConfig();
+        if (_tokenMessenger == address(0) || _usdc == address(0) || _polymerFeeReceiver == address(0)) {
+            revert InvalidAddress();
+        }
 
-        polymerCCTP = _polymerCCTP;
-        usdc = _polymerCCTP.usdc();
-
-        if (usdc == address(0)) revert InvalidConfig();
+        tokenMessenger = ITokenMessenger(_tokenMessenger);
+        usdc = _usdc;
+        polymerFeeReceiver = payable(_polymerFeeReceiver);
     }
 
     /// @notice Bridges USDC via PolymerCCTP
     /// @param _bridgeData The core bridge data
     /// @param _polymerData Data specific to PolymerCCTP
+    /// @notice Requires caller to approve the LifiDiamondProxy of the bridge amount + polymerFee
     function startBridgeTokensViaPolymerCCTP(ILiFi.BridgeData memory _bridgeData, PolymerCCTPData calldata _polymerData)
         external
         payable
@@ -43,26 +48,38 @@ contract PolymerCCTPFacet is ILiFi, ReentrancyGuard, SwapperV2, Validatable {
         doesNotContainSourceSwaps(_bridgeData)
         doesNotContainDestinationCalls(_bridgeData)
     {
-        _startBridge(_bridgeData, _polymerData);
-    }
+        // TODO - is it worth validating the integrator and bridge from the bridgeData here?
+        if(_bridgeData.minAmount == 0){
+            revert InvalidBridgeAmount();
+        }
+        if (_bridgeData.receiver == address(0)){
+            revert InvalidBridgeReceiver();
 
-    /// Private Methods ///
-
-    /// @dev Performs the actual bridging logic
-    /// @param _bridgeData The core bridge data
-    /// @param _polymerData Data specific to PolymerCCTP
-    function _startBridge(ILiFi.BridgeData memory _bridgeData, PolymerCCTPData memory _polymerData) private {
-        // Deposit tokens from user if not already deposited from swaps
-        if (!LibAsset.isNativeAsset(_bridgeData.sendingAssetId)) {
-            LibAsset.depositAsset(_bridgeData.sendingAssetId, _bridgeData.minAmount);
+        }
+        if(_bridgeData.sendingAssetId != usdc){
+            revert InvalidSendingAsset(_bridgeData.sendingAssetId , usdc);
         }
 
-        // Approve PolymerCCTP to spend USDC
-        LibAsset.maxApproveERC20(IERC20(usdc), address(polymerCCTP), _bridgeData.minAmount);
+        // TODO: Do we need this check if it's always going to be usdc?
+        LibAsset.depositAsset(_bridgeData.sendingAssetId, _bridgeData.minAmount );
+        LibAsset.transferFromERC20( usdc,  msg.sender, polymerFeeReceiver,_bridgeData.minAmount );
 
-        // Execute unrestricted bridge (anyone can complete on destination)
-        // Forward any ETH sent as gas fees to the PolymerCCTP contract
-        polymerCCTP.bridgeUSDC{value: msg.value}(_bridgeData.minAmount, _polymerData);
+
+        // TODO we don't need to use safe approve here?
+        IERC20(usdc).approve(address(tokenMessenger), _bridgeData.minAmount);
+
+        // Need tocheck: can we just use destinationChainID as the normal chain id? and can we just mpass in min Amount as the amountT?
+        tokenMessenger.depositForBurn(
+            _bridgeData.minAmount,
+            uint32(_bridgeData.destinationChainId),
+            _bridgeData.receiver == NON_EVM_ADDRESS
+                ? _polymerData.nonEvmAddress
+                : bytes32(uint256(uint160(_bridgeData.receiver))),
+            usdc,
+            bytes32(0), // Unrestricted caller
+            _polymerData.maxCCTPFee, // maxFee - 0 means no fee limit
+            _polymerData.minFinalityThreshold // minFinalityThreshold - use default
+        );
 
         // Emit Li.Fi standard event
         emit LiFiTransferStarted(
@@ -79,6 +96,5 @@ contract PolymerCCTPFacet is ILiFi, ReentrancyGuard, SwapperV2, Validatable {
                 _bridgeData.hasDestinationCall
             )
         );
-
     }
 }
