@@ -1,24 +1,26 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.17;
 
-import {Script, console2} from "forge-std/Script.sol";
-import {LiFiDiamond} from "lifi/LiFiDiamond.sol";
-import {PolymerCCTPFacet} from "lifi/Facets/PolymerCCTPFacet.sol";
-import {ILiFi} from "lifi/Interfaces/ILiFi.sol";
-import {LibSwap} from "lifi/Libraries/LibSwap.sol";
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {PolymerCCTPData} from "lifi/Interfaces/IPolymerCCTP.sol";
+import { Script, console2 } from "forge-std/Script.sol";
+import { LiFiDiamond } from "lifi/LiFiDiamond.sol";
+import { PolymerCCTPFacet } from "lifi/Facets/PolymerCCTPFacet.sol";
+import { ILiFi } from "lifi/Interfaces/ILiFi.sol";
+import { LibSwap } from "lifi/Libraries/LibSwap.sol";
+import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import { PolymerCCTPData } from "lifi/Interfaces/IPolymerCCTP.sol";
 
 contract CallPolymerCCTPFacet is Script {
     function run() external payable {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         address diamondAddress = vm.envAddress("DIAMOND_ADDRESS");
         uint32 destinationDomain = uint32(vm.envUint("DESTINATION_DOMAIN"));
-        address receiver = vm.addr(deployerPrivateKey);
+        address receiver = 0x11f111f111f111F111f111f111F111f111f111F1; // Example non-EVM address
         uint256 amount = uint256(1000);
         uint256 polymerTokenFee = uint256(10);
         uint32 maxCCTPFee = uint32(vm.envOr("MAX_CCTP_FEE", uint256(100)));
-        uint32 minFinalityThreshold = uint32(vm.envOr("MIN_FINALITY_THRESHOLD", uint256(0)));
+        uint32 minFinalityThreshold = uint32(
+            vm.envOr("MIN_FINALITY_THRESHOLD", uint256(0))
+        );
 
         console2.log("Diamond Proxy address:", diamondAddress);
         // Cast diamond to PolymerCCTPFacet to call its functions
@@ -52,7 +54,7 @@ contract CallPolymerCCTPFacet is Script {
             polymerTokenFee: polymerTokenFee,
             maxCCTPFee: maxCCTPFee,
             minFinalityThreshold: minFinalityThreshold,
-            nonEvmAddress: bytes32(0)
+            nonEvmAddress: 0xed80e66dbb2d50c9c0d8323d3ce5b8721e84e0324a1c3361d664d851382228ea // solana address in bytes32: Gz7dD5sQg42QYrNaYUPeyXubCyYJCeqiHTHc1zBBQk1f
         });
 
         console2.log("Calling startBridgeTokensViaPolymerCCTP...");
