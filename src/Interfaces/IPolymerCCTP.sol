@@ -15,6 +15,7 @@ interface IPolymerCCTPFacet {
     error InvalidBridgeAmount();
     error InvalidBridgeReceiver();
     error InvalidSendingAsset( address actual, address expected);
+    error FeeCannotBeLessThanAmount();
 
     event PolymerCCTPFeeSent( uint256 bridgeAmount, uint256 polymerFee, uint32 minFinalityThreshold);
 

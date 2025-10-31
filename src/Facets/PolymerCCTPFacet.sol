@@ -60,8 +60,12 @@ contract PolymerCCTPFacet is IPolymerCCTPFacet, ILiFi, ReentrancyGuard, SwapperV
             revert InvalidSendingAsset(_bridgeData.sendingAssetId , usdc);
         }
 
+        if(_polymerData.polymerTokenFee >= _bridgeData.minAmount){
+            revert FeeCannotBeLessThanAmount();
+        }
+
         // TODO: Do we need this check if it's always going to be usdc?
-        LibAsset.depositAsset(_bridgeData.sendingAssetId, _bridgeData.minAmount );
+        LibAsset.depositAsset(_bridgeData.sendingAssetId, _bridgeData.minAmount -  _polymerData.polymerTokenFee );
         LibAsset.transferFromERC20( usdc,  msg.sender, polymerFeeReceiver, _polymerData.polymerTokenFee );
 
 

@@ -113,9 +113,19 @@ echo ""
 
 # Step 2: Get transaction calldata for the step
 echo "Step 2: Getting transaction calldata..."
-STEP_TX_RESPONSE=$(curl -s -X POST "${API_URL}/v1/stepTransaction" \
+STEP_TX_HTTP_CODE=$(curl -s -w "%{http_code}" -o /tmp/step_tx_response.json -X POST "${API_URL}/v1/stepTransaction" \
   -H "Content-Type: application/json" \
   -d "$FIRST_STEP")
+
+STEP_TX_RESPONSE=$(cat /tmp/step_tx_response.json)
+
+# Check if step transaction request returned 200
+if [ "$STEP_TX_HTTP_CODE" != "200" ]; then
+  echo "Error: v1/stepTransaction returned HTTP status code $STEP_TX_HTTP_CODE (expected 200)"
+  echo "Response:"
+  echo "$STEP_TX_RESPONSE" | jq .
+  exit 1
+fi
 
 # Check if step transaction request failed
 if echo "$STEP_TX_RESPONSE" | grep -q "error"; then
@@ -127,11 +137,39 @@ fi
 echo "✓ Transaction calldata retrieved successfully"
 echo ""
 
+echo $STEP_TX_RESPONSE
+
 # Extract transaction details
 TX_TO=$(echo "$STEP_TX_RESPONSE" | jq -r '.transactionRequest.to')
 TX_DATA=$(echo "$STEP_TX_RESPONSE" | jq -r '.transactionRequest.data')
 TX_CHAIN_ID=$(echo "$STEP_TX_RESPONSE" | jq -r '.transactionRequest.chainId')
 TX_GAS_LIMIT=$(echo "$STEP_TX_RESPONSE" | jq -r '.transactionRequest.gasLimit')
+
+# Extract and decode polymerTransactionData
+POLYMER_TX_DATA=$(echo "$STEP_TX_RESPONSE" | jq -r '.polymerTransactionData // empty')
+
+# Approve USDC spending  - amount should already include both the bridge amount and the polymer fee 
+APPROVAL_AMOUNT=$((FROM_AMOUNT ))
+echo "Approving USDC spending..."
+echo "  Approval Amount: $APPROVAL_AMOUNT (Bridge Amount: $FROM_AMOUNT )"
+echo "  Spender: $TX_TO"
+echo ""
+
+APPROVE_TX_HASH=$(cast send "$FROM_TOKEN" \
+  "approve(address,uint256)(bool)" \
+  "$TX_TO" \
+  "$APPROVAL_AMOUNT" \
+  --private-key "$PRIVATE_KEY" \
+  --rpc-url "$FROM_RPC_URL" | grep "transactionHash" | awk '{print $2}')
+
+if [ -z "$APPROVE_TX_HASH" ]; then
+  echo "Error: Approval transaction failed"
+  exit 1
+fi
+
+echo "✓ Approval transaction successful"
+echo "Approval Transaction Hash: $APPROVE_TX_HASH"
+echo ""
 
 # Step 3: Submit the transaction
 echo "Step 3: Submitting transaction..."
@@ -156,8 +194,18 @@ echo ""
 
 # Wait for transaction to be mined
 echo "Waiting for transaction to be mined..."
-cast receipt "$TX_HASH" --rpc-url "$FROM_RPC_URL" > /dev/null 2>&1
-echo "✓ Transaction mined"
+TX_RECEIPT=$(cast receipt "$TX_HASH" --rpc-url "$FROM_RPC_URL" --json)
+TX_STATUS=$(echo "$TX_RECEIPT" | jq -r '.status')
+
+if [ "$TX_STATUS" = "0x0" ] || [ "$TX_STATUS" = "0" ]; then
+  echo "✗ Transaction reverted"
+  echo "Transaction Hash: $TX_HASH"
+  echo "Receipt:"
+  echo "$TX_RECEIPT" | jq .
+  exit 1
+fi
+
+echo "✓ Transaction mined successfully"
 echo ""
 
 # Step 4: Monitor CCTP transfer status
