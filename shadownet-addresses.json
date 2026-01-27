@@ -47,5 +47,54 @@
     "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
     "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
     "diamondProxy": "0xEFe14484184a9e167B7d97131c72f850aE7FA540"
+  },
+  "999": {
+    "name": "hyperevm",
+    "usdc": "0xb88339CB7199b77E23DB6E890353E22632Ba630f",
+    "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
+    "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+    "diamondProxy": "0x052A246D4e032eBe72c153A9cF54a4D188E7ca85"
+  },
+  "143": {
+    "name": "monad",
+    "usdc": "0x754704Bc059F8C67012fEd69BC8A327a5aafb603",
+    "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
+    "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+    "diamondProxy": "0x10a181543e192a7EeF5FB80f65c0a74A80ad1160"
+  },
+  "59144": {
+    "name": "linea",
+    "usdc": "0x176211869cA2b568f2A7D4EE941E073a821EE1ff",
+    "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
+    "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+    "diamondProxy": "0x796e7B16b8A8E7eA24Ca4E000E245bB4550627cB"
+  },
+  "57073": {
+    "name": "ink",
+    "usdc": "0x2D270e6886d130D724215A266106e6832161EAEd",
+    "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
+    "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+    "diamondProxy": "0x468c00F38e5e06d9E0080214C69Caa5F6C38f111"
+  },
+  "98866": {
+    "name": "plume",
+    "usdc": "0x222365EF19F7947e5484218551B56bb3965Aa7aF",
+    "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
+    "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+    "diamondProxy": "0x796e7B16b8A8E7eA24Ca4E000E245bB4550627cB"
+  },
+  "146": {
+    "name": "sonic",
+    "usdc": "0x29219dd400f2Bf60E5a23d13Be72B486D4038894",
+    "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
+    "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+    "diamondProxy": "0xD9252734e1198Fbd34ca701d0F3D5a3AE893ccA6"
+  },
+  "480": {
+    "name": "worldchain",
+    "usdc": "0x79A02482A880bCe3F13E09da970dC34dB4cD24D1",
+    "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
+    "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+    "diamondProxy": "0x796e7B16b8A8E7eA24Ca4E000E245bB4550627cB"
   }
 }
