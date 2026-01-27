@@ -69,7 +69,7 @@ const [POLYMER_API_URL, ADDRESSES_FILE, FROM_RPC_URL, TO_RPC_URL, PRIVATE_KEY] =
   args
 
 // Configuration
-const FROM_AMOUNT = process.env.FROM_AMOUNT || '1000000'
+const FROM_AMOUNT = process.env.FROM_AMOUNT || '10000'
 const MAX_RETRIES = 60
 const RETRY_INTERVAL = 10000 // 10 seconds in milliseconds
 
