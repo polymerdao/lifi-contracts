@@ -252,16 +252,44 @@ contract PolymerCCTPFacet is ILiFi, ReentrancyGuard, SwapperV2, Validatable, LiF
             return 6; // Base Sepolia
         }
         if (chainId == 421614) {
-            return 3; // Arbitrum Sepolia 
+            return 3; // Arbitrum Sepolia
         }
         if (chainId == 43113) {
-            return 1; // Avalanche Fuji 
+            return 1; // Avalanche Fuji
         }
         if (chainId == 80002) {
             return 7; // Polygon Amoy
         }
         if (chainId == 1301) {
-            return 10; // Unichain Sepolia 
+            return 10; // Unichain Sepolia
+        }
+        if (chainId == 10143) {
+            // monad
+            return 15;
+        }
+        if (chainId == 59141) {
+            // linea
+            return 11;
+        }
+        if (chainId == 763373) {
+            // ink
+            return 21;
+        }
+        if (chainId == 98867) {
+            // plume
+            return 22;
+        }
+        if (chainId == 57054) {
+            // sonic
+            return 13;
+        }
+        if (chainId == 4801) {
+            // worldchain
+            return 14;
+        }
+        if (chainId == 998) {
+            // hyperEvm testnet
+            return 19;
         }
 
         revert InvalidCallData();
