@@ -50,6 +50,9 @@ contract DeployDiamondWithPolymerCCTPFacet is Script {
         DiamondCutFacet(address(diamond)).diamondCut(cuts, address(0), "");
         console2.log("PolymerCCTPFacet successfully added to diamond");
 
+        PolymerCCTPFacet(address(diamond)).initPolymerCCTP();
+        console2.log("PolymerCCTPFacet successfully initialized");
+
         vm.stopBroadcast();
     }
 }
