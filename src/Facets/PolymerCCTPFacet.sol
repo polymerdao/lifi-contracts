@@ -240,6 +240,10 @@ contract PolymerCCTPFacet is ILiFi, ReentrancyGuard, SwapperV2, Validatable, LiF
         if (chainId == 98866) {
             return 22; // Plume
         }
+        if (chainId == 143) {
+            // monad
+            return 15;
+        }
 
         // Testnet chain IDs
         if (chainId == 11155111) {
