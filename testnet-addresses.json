@@ -40,5 +40,41 @@
     "tokenMessenger": "0x8FE6B999Dc680CcFDD5Bf7EB0974218be2542DAA",
     "polymerFeeRecipient": "0x3d1ed7307Ee6dEB2e1cEA9D96C33574fA2a35Bb6",
     "diamondProxy": "0x49987fDB68cf65bb66236f4fF7D226C4609aD640"
+  },
+  "10143": {
+    "usdc": "0x534b2f3A21130d7a60830c2Df862319e593943A3",
+    "tokenMessenger": "0x8FE6B999Dc680CcFDD5Bf7EB0974218be2542DAA",
+    "polymerFeeRecipient": "0x3d1ed7307Ee6dEB2e1cEA9D96C33574fA2a35Bb6",
+    "diamondProxy": "0x789F74C83618c8646E30310b1ee6C4fda2c0b81A"
+  },
+  "59141": {
+    "usdc": "0xFEce4462D57bD51A6A552365A011b95f0E16d9B7",
+    "tokenMessenger": "0x8FE6B999Dc680CcFDD5Bf7EB0974218be2542DAA",
+    "polymerFeeRecipient": "0x3d1ed7307Ee6dEB2e1cEA9D96C33574fA2a35Bb6",
+    "diamondProxy": "0x393132B93cA90Bb57CCC4Ae611A156838F866605"
+  },
+  "763373": {
+    "usdc": "0xFabab97dCE620294D2B0b0e46C68964e326300Ac",
+    "tokenMessenger": "0x8FE6B999Dc680CcFDD5Bf7EB0974218be2542DAA",
+    "polymerFeeRecipient": "0x3d1ed7307Ee6dEB2e1cEA9D96C33574fA2a35Bb6",
+    "diamondProxy": "0x63C0d99458E2d2153cF95ad8b800e191633F0d69"
+  },
+  "98867": {
+    "usdc": "0xcB5f30e335672893c7eb944B374c196392C19D18",
+    "tokenMessenger": "0x8FE6B999Dc680CcFDD5Bf7EB0974218be2542DAA",
+    "polymerFeeRecipient": "0x3d1ed7307Ee6dEB2e1cEA9D96C33574fA2a35Bb6",
+    "diamondProxy": "0x84Ad9CD5C472bc513092ED9DE57d0A9fC4f10ACa"
+  },
+  "57054": {
+    "usdc": "0x0BA304580ee7c9a980CF72e55f5Ed2E9fd30Bc51",
+    "tokenMessenger": "0x8FE6B999Dc680CcFDD5Bf7EB0974218be2542DAA",
+    "polymerFeeRecipient": "0x3d1ed7307Ee6dEB2e1cEA9D96C33574fA2a35Bb6",
+    "diamondProxy": "0xFCfdBF8023cD204A7890beD02E4809d9345Fe125"
+  },
+  "4801": {
+    "usdc": "0x66145f38cBAC35Ca6F1Dfb4914dF98F1614aeA88",
+    "tokenMessenger": "0x8FE6B999Dc680CcFDD5Bf7EB0974218be2542DAA",
+    "polymerFeeRecipient": "0x3d1ed7307Ee6dEB2e1cEA9D96C33574fA2a35Bb6",
+    "diamondProxy": "0x393132B93cA90Bb57CCC4Ae611A156838F866605"
   }
 }
