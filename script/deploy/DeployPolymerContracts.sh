@@ -96,6 +96,7 @@ export TOKEN_MESSENGER
 export USDC
 export POLYMER_FEE_RECIPIENT
 
+echo TOKEN MESSENGER $TOKEN_MESSENGER
 echo -e "${BLUE}Deploying Diamond with PolymerCCTPFacet to chain $CHAIN_ID...${NC}"
 
 # Create temp files for output

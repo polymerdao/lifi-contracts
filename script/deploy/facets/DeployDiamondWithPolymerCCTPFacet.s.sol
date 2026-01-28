@@ -20,6 +20,7 @@ contract DeployDiamondWithPolymerCCTPFacet is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         // Deploy DiamondCutFacet
+        console2.log("Using token messenger", tokenMessenger);
         console2.log("Deploying DiamondCutFacet...");
         DiamondCutFacet diamondCutFacet = new DiamondCutFacet();
         console2.log("DiamondCutFacet deployed at:", address(diamondCutFacet));
