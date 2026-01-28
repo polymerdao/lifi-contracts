@@ -14,7 +14,7 @@ contract CallPolymerCCTPFacet is Script {
         address diamondAddress = vm.envAddress("DIAMOND_ADDRESS");
         uint32 destinationChainId = uint32(vm.envUint("DESTINATION_CHAIN_ID"));
         address receiver = vm.addr(deployerPrivateKey);
-        uint256 amount = uint256(1000);
+        uint256 amount = uint256(500);
         uint256 polymerTokenFee = uint256(10);
         uint32 maxCCTPFee = uint32(vm.envOr("MAX_CCTP_FEE", uint256(100)));
         uint32 minFinalityThreshold = uint32(vm.envOr("MIN_FINALITY_THRESHOLD", uint256(0)));

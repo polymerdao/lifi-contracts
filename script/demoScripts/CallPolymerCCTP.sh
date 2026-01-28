@@ -11,12 +11,12 @@ NC='\033[0m' # No Color
 
 # Function to display usage
 usage() {
-    echo "Usage: $0 <RPC_URL> <PRIVATE_KEY> <DESTINATION_DOMAIN> <ADDRESSES_FILE>"
+    echo "Usage: $0 <RPC_URL> <PRIVATE_KEY> <DESTINATION_CHAIN_ID> <ADDRESSES_FILE>"
     echo ""
     echo "Required arguments:"
     echo "  RPC_URL              RPC endpoint URL"
     echo "  PRIVATE_KEY          Private key for deployment"
-    echo "  DESTINATION_DOMAIN   Destination domain for CCTP bridge"
+    echo "  DESTINATION_CHAIN_ID   Destination domain for CCTP bridge"
     echo "  ADDRESSES_FILE       Path to addresses json"
     echo ""
     echo "Example:"
@@ -33,7 +33,7 @@ fi
 # Parse positional arguments
 RPC_URL="$1"
 PRIVATE_KEY="$2"
-DESTINATION_DOMAIN="$3"
+DESTINATION_CHAIN_ID="$3"
 ADDRESSES_FILE="$4"
 
 # Get chain ID from RPC
@@ -74,7 +74,7 @@ fi
 export RPC_URL
 export CHAIN_ID
 export PRIVATE_KEY
-export DESTINATION_DOMAIN
+export DESTINATION_CHAIN_ID
 export DIAMOND_ADDRESS
 export USDC
 
