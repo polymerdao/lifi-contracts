@@ -1,0 +1,107 @@
+{
+  "42161": {
+    "name": "arbitrum",
+    "usdc": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
+    "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+    "diamondProxy": "0xD99A49304227d3fE2c27A1F12Ef66A95b95837b6"
+  },
+  "43114": {
+    "name": "avalanche",
+    "usdc": "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+    "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
+    "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+    "diamondProxy": "0xaB3A9B4C377EB69eB378cdF81a0526197AEd092c"
+  },
+  "8453": {
+    "name": "base",
+    "usdc": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
+    "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+    "diamondProxy": "0xB22Fe594268624F43a2445fC1279c5D1BDc12254"
+  },
+  "1": {
+    "name": "ethereum",
+    "usdc": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
+    "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+    "diamondProxy": "0xf2d723C575b6e6F51039832533967D44d9Ef1968"
+  },
+  "10": {
+    "name": "optimism",
+    "usdc": "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
+    "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
+    "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+    "diamondProxy": "0x36d7A6e0B2FE968a9558C5AaF5713aC2DAc0DbFc"
+  },
+  "137": {
+    "name": "polygon",
+    "usdc": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+    "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
+    "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+    "diamondProxy": "0xaB3A9B4C377EB69eB378cdF81a0526197AEd092c"
+  },
+  "130": {
+    "name": "unichain",
+    "usdc": "0x078D782b760474a361dDA0AF3839290b0EF57AD6",
+    "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
+    "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+    "diamondProxy": "0xEFe14484184a9e167B7d97131c72f850aE7FA540"
+  },
+  "999": {
+    "name": "hyperevm",
+    "usdc": "0xb88339CB7199b77E23DB6E890353E22632Ba630f",
+    "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
+    "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+    "diamondProxy": "0xBa1De839Ac780b4aD892726CbdAd264B67162c47"
+  },
+  "143": {
+    "name": "monad",
+    "usdc": "0x754704Bc059F8C67012fEd69BC8A327a5aafb603",
+    "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
+    "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+    "diamondProxy": "0x10a181543e192a7EeF5FB80f65c0a74A80ad1160"
+  },
+  "59144": {
+    "name": "linea",
+    "usdc": "0x176211869cA2b568f2A7D4EE941E073a821EE1ff",
+    "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
+    "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+    "diamondProxy": "0xBa1De839Ac780b4aD892726CbdAd264B67162c47"
+  },
+  "57073": {
+    "name": "ink",
+    "usdc": "0x2D270e6886d130D724215A266106e6832161EAEd",
+    "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
+    "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+    "diamondProxy": "0x293E564Ecb88410F3aD5Cd4c3aA043f090eE52dc"
+  },
+  "98866": {
+    "name": "plume",
+    "usdc": "0x222365EF19F7947e5484218551B56bb3965Aa7aF",
+    "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
+    "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+    "diamondProxy": "0x293E564Ecb88410F3aD5Cd4c3aA043f090eE52dc"
+  },
+  "146": {
+    "name": "sonic",
+    "usdc": "0x29219dd400f2Bf60E5a23d13Be72B486D4038894",
+    "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
+    "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+    "diamondProxy": "0x293E564Ecb88410F3aD5Cd4c3aA043f090eE52dc"
+  },
+  "480": {
+    "name": "worldchain",
+    "usdc": "0x79A02482A880bCe3F13E09da970dC34dB4cD24D1",
+    "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
+    "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+    "diamondProxy": "0x9765885053Da4835e98546139017EEee41712815"
+  },
+  "1329": {
+    "name": "sei",
+    "usdc": "0xe15fC38F6D8c56aF07bbCBe3BAf5708A2Bf42392",
+    "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
+    "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+    "diamondProxy": "0x38d8584d678c36B8B611b39d4Dae6d0bb416F854"
+  }
+}
