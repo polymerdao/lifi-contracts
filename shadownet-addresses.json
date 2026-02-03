@@ -96,5 +96,12 @@
     "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
     "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
     "diamondProxy": "0x9765885053Da4835e98546139017EEee41712815"
+  },
+  "1329": {
+    "name": "sei",
+    "usdc": "0xe15fC38F6D8c56aF07bbCBe3BAf5708A2Bf42392",
+    "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
+    "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
+    "diamondProxy": "0x38d8584d678c36B8B611b39d4Dae6d0bb416F854"
   }
 }
