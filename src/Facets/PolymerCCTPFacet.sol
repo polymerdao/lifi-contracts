@@ -27,6 +27,7 @@ struct PolymerCCTPData {
     // CCTP fee caps/params
     uint256 maxCCTPFee;
     bytes32 nonEvmAddress; // Should only be nonzero if submitting to a nonEvm chain
+    bytes32 solanaReceiverATA;
     uint32 minFinalityThreshold; // MinFinalityThreshold for CCTP bridge, will be passed directly to tokenMessenger.depositForBurn method. Currently, the threshold < 1000 corresponds to fast path
 }
 
@@ -152,7 +153,7 @@ contract PolymerCCTPFacet is ILiFi, ReentrancyGuard, SwapperV2, Validatable, LiF
             TOKEN_MESSENGER.depositForBurn(
                 bridgeAmount,
                 _chainIdToDomainId(_bridgeData.destinationChainId),
-                _polymerData.nonEvmAddress,
+                _polymerData.solanaReceiverATA,
                 USDC,
                 bytes32(0), // Unrestricted caller
                 _polymerData.maxCCTPFee, // maxFee - 0 means no fee limit
