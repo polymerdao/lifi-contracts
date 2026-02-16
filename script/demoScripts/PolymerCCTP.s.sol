@@ -50,9 +50,11 @@ contract CallPolymerCCTPFacet is Script {
         PolymerCCTPData memory polymerData = PolymerCCTPData({
             polymerTokenFee: polymerTokenFee,
             maxCCTPFee: maxCCTPFee,
-            minFinalityThreshold: minFinalityThreshold,
             nonEvmAddress: bytes32(0),
-            solanaReceiverATA: bytes32(0)
+            solanaReceiverATA: bytes32(0),
+            minFinalityThreshold: minFinalityThreshold,
+            destinationCaller: bytes32(0),
+            hookData: ""
         });
 
         console2.log("Calling startBridgeTokensViaPolymerCCTP...");

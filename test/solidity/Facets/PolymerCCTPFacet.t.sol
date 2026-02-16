@@ -39,6 +39,14 @@ contract TestPolymerCCTPFacet is PolymerCCTPFacet {
 // Mock TokenMessenger
 contract MockTokenMessenger {
     event DepositForBurn(uint256 amount, uint32 destinationDomain, bytes32 mintRecipient, address burnToken);
+    event DepositForBurnWithHook(
+        uint256 amount,
+        uint32 destinationDomain,
+        bytes32 mintRecipient,
+        address burnToken,
+        bytes32 destinationCaller,
+        bytes hookData
+    );
 
     function depositForBurn(
         uint256 amount,
@@ -52,6 +60,20 @@ contract MockTokenMessenger {
         // Transfer tokens from caller
         ERC20(burnToken).transferFrom(msg.sender, address(this), amount);
         emit DepositForBurn(amount, destinationDomain, mintRecipient, burnToken);
+    }
+
+    function depositForBurnWithHook(
+        uint256 amount,
+        uint32 destinationDomain,
+        bytes32 mintRecipient,
+        address burnToken,
+        bytes32 destinationCaller,
+        uint256,
+        uint32,
+        bytes calldata hookData
+    ) external {
+        ERC20(burnToken).transferFrom(msg.sender, address(this), amount);
+        emit DepositForBurnWithHook(amount, destinationDomain, mintRecipient, burnToken, destinationCaller, hookData);
     }
 }
 
@@ -122,7 +144,7 @@ contract PolymerCCTPFacetTest is Test {
         });
 
         PolymerCCTPData memory polymerData = PolymerCCTPData({
-            polymerTokenFee: polymerFee, maxCCTPFee: 0, nonEvmAddress: bytes32(0), minFinalityThreshold: 0
+            polymerTokenFee: polymerFee, maxCCTPFee: 0, nonEvmAddress: bytes32(0), solanaReceiverATA: bytes32(0), minFinalityThreshold: 0, destinationCaller: bytes32(0), hookData: ""
         });
 
         vm.startPrank(user);
@@ -160,7 +182,7 @@ contract PolymerCCTPFacetTest is Test {
         });
 
         PolymerCCTPData memory polymerData = PolymerCCTPData({
-            polymerTokenFee: 100e6, maxCCTPFee: 0, nonEvmAddress: bytes32(0), minFinalityThreshold: 0
+            polymerTokenFee: 100e6, maxCCTPFee: 0, nonEvmAddress: bytes32(0), solanaReceiverATA: bytes32(0), minFinalityThreshold: 0, destinationCaller: bytes32(0), hookData: ""
         });
 
         vm.startPrank(user);
@@ -186,7 +208,7 @@ contract PolymerCCTPFacetTest is Test {
         });
 
         PolymerCCTPData memory polymerData = PolymerCCTPData({
-            polymerTokenFee: 100e6, maxCCTPFee: 0, nonEvmAddress: bytes32(0), minFinalityThreshold: 0
+            polymerTokenFee: 100e6, maxCCTPFee: 0, nonEvmAddress: bytes32(0), solanaReceiverATA: bytes32(0), minFinalityThreshold: 0, destinationCaller: bytes32(0), hookData: ""
         });
 
         vm.startPrank(user);
@@ -216,7 +238,7 @@ contract PolymerCCTPFacetTest is Test {
         });
 
         PolymerCCTPData memory polymerData = PolymerCCTPData({
-            polymerTokenFee: 100e6, maxCCTPFee: 0, nonEvmAddress: bytes32(0), minFinalityThreshold: 0
+            polymerTokenFee: 100e6, maxCCTPFee: 0, nonEvmAddress: bytes32(0), solanaReceiverATA: bytes32(0), minFinalityThreshold: 0, destinationCaller: bytes32(0), hookData: ""
         });
 
         vm.startPrank(user);
@@ -226,6 +248,55 @@ contract PolymerCCTPFacetTest is Test {
         facet.startBridgeTokensViaPolymerCCTP(bridgeData, polymerData);
 
         vm.stopPrank();
+    }
+
+    function test_CanBridgeWithHookData() public {
+        uint256 bridgeAmount = 100_000e6;
+        uint256 polymerFee = 100e6;
+        uint256 amountAfterFee = bridgeAmount - polymerFee;
+
+        // The forwarder contract address on HyperEVM
+        address forwarder = address(0xb21D281DEdb17AE5B501F6AA8256fe38C4e45757);
+        bytes32 forwarderBytes32 = bytes32(uint256(uint160(forwarder)));
+        bytes memory hookData = abi.encode(address(0xABC)); // encoded recipient on HyperCore
+
+        ILiFi.BridgeData memory bridgeData = ILiFi.BridgeData({
+            transactionId: bytes32(uint256(2)),
+            bridge: "polymercctp",
+            integrator: "test",
+            referrer: address(0),
+            sendingAssetId: address(usdc),
+            receiver: forwarder, // mintRecipient = forwarder
+            minAmount: bridgeAmount,
+            destinationChainId: 999, // HyperEVM
+            hasSourceSwaps: false,
+            hasDestinationCall: false
+        });
+
+        PolymerCCTPData memory polymerData = PolymerCCTPData({
+            polymerTokenFee: polymerFee,
+            maxCCTPFee: 0,
+            nonEvmAddress: bytes32(0),
+            solanaReceiverATA: bytes32(0),
+            minFinalityThreshold: 0,
+            destinationCaller: forwarderBytes32, // only forwarder can call receiveMessage
+            hookData: hookData
+        });
+
+        vm.startPrank(user);
+        usdc.approve(address(facet), bridgeAmount);
+
+        vm.expectEmit(true, true, true, true);
+        emit MockTokenMessenger.DepositForBurnWithHook(
+            amountAfterFee, 19, forwarderBytes32, address(usdc), forwarderBytes32, hookData
+        );
+
+        facet.startBridgeTokensViaPolymerCCTP(bridgeData, polymerData);
+        vm.stopPrank();
+
+        assertEq(usdc.balanceOf(feeReceiver), polymerFee);
+        assertEq(usdc.balanceOf(address(tokenMessenger)), amountAfterFee);
+        assertEq(usdc.balanceOf(user), 1_000_000e6 - bridgeAmount);
     }
 
     function test_CanSwapAndBridgeViaPolymerCCTP() public {
@@ -273,7 +344,7 @@ contract PolymerCCTPFacetTest is Test {
         });
 
         PolymerCCTPData memory polymerData = PolymerCCTPData({
-            polymerTokenFee: polymerFee, maxCCTPFee: 0, nonEvmAddress: bytes32(0), minFinalityThreshold: 0
+            polymerTokenFee: polymerFee, maxCCTPFee: 0, nonEvmAddress: bytes32(0), solanaReceiverATA: bytes32(0), minFinalityThreshold: 0, destinationCaller: bytes32(0), hookData: ""
         });
 
         vm.startPrank(user);

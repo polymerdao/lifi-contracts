@@ -4,7 +4,7 @@
     "usdc": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
     "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
-    "diamondProxy": "0xD99A49304227d3fE2c27A1F12Ef66A95b95837b6"
+    "diamondProxy": "0xE4412AEa45a7121042c33b65291d11F71F4d0363"
   },
   "43114": {
     "name": "avalanche",
@@ -18,7 +18,7 @@
     "usdc": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
     "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
     "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
-    "diamondProxy": "0xB22Fe594268624F43a2445fC1279c5D1BDc12254"
+    "diamondProxy": "0x2C337DCDFE9814AEEBF881F4fc3062078dB7Fa11"
   },
   "1": {
     "name": "ethereum",

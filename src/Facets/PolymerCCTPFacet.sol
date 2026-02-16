@@ -29,6 +29,12 @@ struct PolymerCCTPData {
     bytes32 nonEvmAddress; // Should only be nonzero if submitting to a nonEvm chain
     bytes32 solanaReceiverATA;
     uint32 minFinalityThreshold; // MinFinalityThreshold for CCTP bridge, will be passed directly to tokenMessenger.depositForBurn method. Currently, the threshold < 1000 corresponds to fast path
+    // Restricted caller on the destination domain. If bytes32(0), any address can call receiveMessage.
+    // Required for hook flows (e.g. HyperCore forwarding) where only the forwarder contract should execute.
+    bytes32 destinationCaller;
+    // Hook data appended to the burn message for execution on the destination domain.
+    // When non-empty, depositForBurnWithHook is used instead of depositForBurn.
+    bytes hookData;
 }
 
 /// @title PolymerCCTPFacet
@@ -136,15 +142,31 @@ contract PolymerCCTPFacet is ILiFi, ReentrancyGuard, SwapperV2, Validatable, LiF
                 revert InvalidReceiver();
             }
 
-            TOKEN_MESSENGER.depositForBurn(
-                bridgeAmount,
-                _chainIdToDomainId(_bridgeData.destinationChainId),
-                bytes32(uint256(uint160(_bridgeData.receiver))),
-                USDC,
-                bytes32(0), // Unrestricted caller
-                _polymerData.maxCCTPFee, // maxFee - 0 means no fee limit
-                _polymerData.minFinalityThreshold // minFinalityThreshold - use default
-            );
+            uint32 domainId = _chainIdToDomainId(_bridgeData.destinationChainId);
+            bytes32 mintRecipient = bytes32(uint256(uint160(_bridgeData.receiver)));
+
+            if (_polymerData.hookData.length > 0) {
+                TOKEN_MESSENGER.depositForBurnWithHook(
+                    bridgeAmount,
+                    domainId,
+                    mintRecipient,
+                    USDC,
+                    _polymerData.destinationCaller,
+                    _polymerData.maxCCTPFee,
+                    _polymerData.minFinalityThreshold,
+                    _polymerData.hookData
+                );
+            } else {
+                TOKEN_MESSENGER.depositForBurn(
+                    bridgeAmount,
+                    domainId,
+                    mintRecipient,
+                    USDC,
+                    _polymerData.destinationCaller,
+                    _polymerData.maxCCTPFee,
+                    _polymerData.minFinalityThreshold
+                );
+            }
         } else {
             // _bridgeData.receiver == NON_EVM_ADDRESS -> mint to _polymerData.nonEvmAddress
             if (_polymerData.nonEvmAddress == bytes32(0)) {
@@ -155,9 +177,9 @@ contract PolymerCCTPFacet is ILiFi, ReentrancyGuard, SwapperV2, Validatable, LiF
                 _chainIdToDomainId(_bridgeData.destinationChainId),
                 _polymerData.solanaReceiverATA,
                 USDC,
-                bytes32(0), // Unrestricted caller
-                _polymerData.maxCCTPFee, // maxFee - 0 means no fee limit
-                _polymerData.minFinalityThreshold // minFinalityThreshold - use default
+                _polymerData.destinationCaller,
+                _polymerData.maxCCTPFee,
+                _polymerData.minFinalityThreshold
             );
             emit BridgeToNonEVMChainBytes32(
                 _bridgeData.transactionId, _bridgeData.destinationChainId, _polymerData.nonEvmAddress
@@ -232,7 +254,7 @@ contract PolymerCCTPFacet is ILiFi, ReentrancyGuard, SwapperV2, Validatable, LiF
         if (chainId == 50) {
             return 18; // XDC
         }
-        if (chainId == 999) {
+        if (chainId == 999 || chainId == LIFI_CHAIN_ID_HYPERCORE) {
             return 19; // HyperEVM
         }
         if (chainId == 57073) {

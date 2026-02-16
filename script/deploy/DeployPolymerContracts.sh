@@ -108,6 +108,7 @@ forge script ./script/deploy/facets/DeployDiamondWithPolymerCCTPFacet.s.sol \
     --rpc-url "$RPC_URL" \
     --broadcast \
     --verify \
+    --slow \
     2>&1 | tee "$DEPLOY_OUTPUT_FILE"
 
 DEPLOY_OUTPUT=$(cat "$DEPLOY_OUTPUT_FILE")
