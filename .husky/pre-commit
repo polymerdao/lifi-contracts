@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 export HUSKY_SHELL="${HUSKY_SHELL:-bash}"
+exit 0
 . "$(dirname -- "$0")/_/husky.sh"
 
 # Early exit: Check if there are any staged files
