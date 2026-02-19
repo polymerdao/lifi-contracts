@@ -95,7 +95,9 @@ contract PolymerCCTPFacetTest is TestBaseFacet {
             maxCCTPFee: (bridgeData.minAmount / 100) * 10, // 10% of bridging amount
             nonEVMReceiver: bytes32(0),
             solanaReceiverATA: bytes32(0),
-            minFinalityThreshold: 1000 // Fast route (1000)
+            minFinalityThreshold: 1000, // Fast route (1000)
+            destinationCaller: bytes32(0),
+            hookData: ""
         });
 
         assertEq(
@@ -174,7 +176,9 @@ contract PolymerCCTPFacetTest is TestBaseFacet {
                 maxCCTPFee: maxCCTPFee,
                 nonEVMReceiver: validPolymerData.nonEVMReceiver,
                 solanaReceiverATA: validPolymerData.solanaReceiverATA,
-                minFinalityThreshold: validPolymerData.minFinalityThreshold
+                minFinalityThreshold: validPolymerData.minFinalityThreshold,
+                destinationCaller: validPolymerData.destinationCaller,
+                hookData: validPolymerData.hookData
             });
 
         usdc.approve(_facetTestContractAddress, amount);
@@ -211,7 +215,9 @@ contract PolymerCCTPFacetTest is TestBaseFacet {
                 maxCCTPFee: swapOutputAmount / 10, // 10% of swap output
                 nonEVMReceiver: validPolymerData.nonEVMReceiver,
                 solanaReceiverATA: validPolymerData.solanaReceiverATA,
-                minFinalityThreshold: validPolymerData.minFinalityThreshold
+                minFinalityThreshold: validPolymerData.minFinalityThreshold,
+                destinationCaller: validPolymerData.destinationCaller,
+                hookData: validPolymerData.hookData
             });
 
         dai.approve(_facetTestContractAddress, swapData[0].fromAmount);

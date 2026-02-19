@@ -46,6 +46,12 @@ contract PolymerCCTPFacet is
         // the minimum finality at which a burn message will be attested to, will be passed directly to tokenMessenger.depositForBurn method.
         // 1000 = fast path, 2000 = standard path
         uint32 minFinalityThreshold;
+        // Restricted caller on the destination domain. If bytes32(0), any address can call receiveMessage.
+        // Required for hook flows (e.g. HyperCore forwarding) where only the forwarder contract should execute.
+        bytes32 destinationCaller;
+        // Hook data appended to the burn message for execution on the destination domain.
+        // When non-empty, depositForBurnWithHook is used instead of depositForBurn.
+        bytes hookData;
     }
 
     /// Events ///
@@ -197,15 +203,31 @@ contract PolymerCCTPFacet is
                 revert InvalidReceiver();
             }
 
-            TOKEN_MESSENGER.depositForBurn(
-                bridgeAmount,
-                _chainIdToDomainId(destinationChainId),
-                bytes32(uint256(uint160(_bridgeData.receiver))),
-                USDC,
-                UNRESTRICTED_DESTINATION_CALLER,
-                _polymerData.maxCCTPFee, // maxFee - 0 means no fee limit
-                _polymerData.minFinalityThreshold // minFinalityThreshold - use default
-            );
+            uint32 domainId = _chainIdToDomainId(_bridgeData.destinationChainId);
+            bytes32 mintRecipient = bytes32(uint256(uint160(_bridgeData.receiver)));
+
+            if (_polymerData.hookData.length > 0) {
+                TOKEN_MESSENGER.depositForBurnWithHook(
+                    bridgeAmount,
+                    domainId,
+                    mintRecipient,
+                    USDC,
+                    _polymerData.destinationCaller,
+                    _polymerData.maxCCTPFee,
+                    _polymerData.minFinalityThreshold,
+                    _polymerData.hookData
+                );
+            } else {
+                TOKEN_MESSENGER.depositForBurn(
+                    bridgeAmount,
+                    domainId,
+                    mintRecipient,
+                    USDC,
+                    UNRESTRICTED_DESTINATION_CALLER,
+                    _polymerData.maxCCTPFee, // maxFee - 0 means no fee limit
+                    _polymerData.minFinalityThreshold // minFinalityThreshold - use default
+                );
+            }
         } else {
             // For Solana, CCTP expects the ATA as mintRecipient; for other non-EVM, use nonEVMReceiver.
             bool isSolanaDestination = destinationChainId ==
@@ -315,7 +337,7 @@ contract PolymerCCTPFacet is
         if (chainId == 50) {
             return 18; // XDC
         }
-        if (chainId == 999) {
+        if (chainId == 999 || chainId == LIFI_CHAIN_ID_HYPERCORE) {
             return 19; // HyperEVM
         }
         if (chainId == 57073) {
