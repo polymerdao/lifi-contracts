@@ -327,6 +327,57 @@ contract PolymerCCTPFacet is
         if (chainId == 1672) {
             return 31; // Pharos
         }
+
+        // Testnet chain IDs
+        if (chainId == 11155111) {
+            return 0; // Sepolia
+        }
+        if (chainId == 11155420) {
+            return 2; // OP Sepolia
+        }
+        if (chainId == 84532) {
+            return 6; // Base Sepolia
+        }
+        if (chainId == 421614) {
+            return 3; // Arbitrum Sepolia
+        }
+        if (chainId == 43113) {
+            return 1; // Avalanche Fuji
+        }
+        if (chainId == 80002) {
+            return 7; // Polygon Amoy
+        }
+        if (chainId == 1301) {
+            return 10; // Unichain Sepolia
+        }
+        if (chainId == 10143) {
+            return 15; // monad
+        }
+        if (chainId == 59141) {
+            return 11; // linea
+        }
+        if (chainId == 763373) {
+            return 21; // ink
+        }
+        if (chainId == 98867) {
+            return 22; // plume
+        }
+        if (chainId == 57054) {
+            return 13; // sonic
+        }
+        if (chainId == 4801) {
+            return 14; // worldchain
+        }
+        if (chainId == 998) {
+            return 19; // HyperEVM
+        }
+        if (chainId == 5042002) {
+            return 26; // Arc Testnet
+        }
+        if (chainId == 688689) {
+            return 31; // Pharos Atlantic Testnet
+        }
+
         revert InvalidCallData();
     }
 }
