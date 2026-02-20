@@ -53,7 +53,7 @@
     "usdc": "0xb88339CB7199b77E23DB6E890353E22632Ba630f",
     "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
     "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
-    "diamondProxy": "0xBa1De839Ac780b4aD892726CbdAd264B67162c47"
+    "diamondProxy": "0x9765885053Da4835e98546139017EEee41712815"
   },
   "143": {
     "name": "monad",
@@ -95,7 +95,7 @@
     "usdc": "0x79A02482A880bCe3F13E09da970dC34dB4cD24D1",
     "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
     "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
-    "diamondProxy": "0x9765885053Da4835e98546139017EEee41712815"
+    "diamondProxy": "0x57209A18Bc4C5aD59E7296a3e65B6549320cbE56"
   },
   "1329": {
     "name": "sei",
