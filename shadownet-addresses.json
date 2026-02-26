@@ -4,7 +4,7 @@
     "usdc": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
     "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
-    "diamondProxy": "0xcF9f286d42f6910bAB147a62FFC1C9114417d88e"
+    "diamondProxy": "0x46271c9b6BA01C6C197125a7FdDB59423E5502a5"
   },
   "43114": {
     "name": "avalanche",
@@ -18,14 +18,14 @@
     "usdc": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
     "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
     "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
-    "diamondProxy": "0x2C337DCDFE9814AEEBF881F4fc3062078dB7Fa11"
+    "diamondProxy": "0x83C7582894aA2a948ce097CD1ed55F75F0f9C8d6"
   },
   "1": {
     "name": "ethereum",
     "usdc": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
     "polymerFeeRecipient": "0x356DC9e113a006d5e85556A54DCA865832dAC06B",
     "tokenMessenger": "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d",
-    "diamondProxy": "0xf2d723C575b6e6F51039832533967D44d9Ef1968"
+    "diamondProxy": "0x1E768b662A9606abD3a58122d23Bc0ef4cBC878B"
   },
   "10": {
     "name": "optimism",
