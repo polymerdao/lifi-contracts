@@ -390,6 +390,9 @@ contract PolymerCCTPFacet is
         if (chainId == 998) {
             return 19; // HyperEVM
         }
+        if (chainId == 5042002) {
+            return 26; // Arc Testnet
+        }
 
         revert InvalidCallData();
     }
