@@ -252,7 +252,7 @@
       "tokenMessengerV2": "0x8FE6B999Dc680CcFDD5Bf7EB0974218be2542DAA",
       "polymerFeeReceiver": "0x3d1ed7307Ee6dEB2e1cEA9D96C33574fA2a35Bb6",
       "domainId": 6,
-      "diamondProxy": "0xc23b7F1F8bd1082b022617975663F227deCaafEb"
+      "diamondProxy": "0x16ffCaC309132bD0A7edFB71d99d2f27A4b8a74C"
     },
     "43113": {
       "usdc": "0x5425890298aed601595a70AB815c96711a31Bc65",
@@ -330,6 +330,13 @@
       "polymerFeeReceiver": "0x3d1ed7307Ee6dEB2e1cEA9D96C33574fA2a35Bb6",
       "domainId": 35,
       "diamondProxy": "0x945c5618c36c86Fb25E0015E7DE281d06B1c9f4A"
+    },
+    "2910": {
+      "usdc": "0x7433b41C6c5e1d58D4Da99483609520255ab661B",
+      "tokenMessengerV2": "0x8FE6B999Dc680CcFDD5Bf7EB0974218be2542DAA",
+      "polymerFeeReceiver": "0x3d1ed7307Ee6dEB2e1cEA9D96C33574fA2a35Bb6",
+      "domainId": 30,
+      "diamondProxy": "0xf98Fe4d0BC63ccF30AD0164eaacd021f4fa44b6e"
     }
   }
 }
