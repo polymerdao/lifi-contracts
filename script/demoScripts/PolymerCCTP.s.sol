@@ -58,7 +58,8 @@ contract CallPolymerCCTPFacet is Script {
                 maxCCTPFee: maxCCTPFee,
                 nonEVMReceiver: bytes32(0),
                 solanaReceiverATA: bytes32(0),
-                minFinalityThreshold: minFinalityThreshold
+                minFinalityThreshold: minFinalityThreshold,
+                hookData: ""
             });
 
         console2.log("Calling startBridgeTokensViaPolymerCCTP...");
