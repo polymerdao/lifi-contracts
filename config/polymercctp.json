@@ -353,6 +353,13 @@
       "polymerFeeReceiver": "0x3d1ed7307Ee6dEB2e1cEA9D96C33574fA2a35Bb6",
       "domainId": 30,
       "diamondProxy": "0xf98Fe4d0BC63ccF30AD0164eaacd021f4fa44b6e"
+    },
+    "1439": {
+      "usdc": "0x0C382e685bbeeFE5d3d9C29e29E341fEE8E84C5d",
+      "tokenMessengerV2": "0x8FE6B999Dc680CcFDD5Bf7EB0974218be2542DAA",
+      "polymerFeeReceiver": "0x3d1ed7307Ee6dEB2e1cEA9D96C33574fA2a35Bb6",
+      "domainId": 29,
+      "diamondProxy": "0xf98Fe4d0BC63ccF30AD0164eaacd021f4fa44b6e"
     }
   }
 }
