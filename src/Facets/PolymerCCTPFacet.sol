@@ -47,26 +47,32 @@ contract PolymerCCTPFacet is
     /// @notice bytes32(0) allows any address to complete the CCTP transfer on destination chain
     bytes32 private constant UNRESTRICTED_DESTINATION_CALLER = bytes32(0);
 
-    /// @notice Circle's CctpForwarder on HyperEVM (0xb21D281DEdb17AE5B501F6AA8256fe38C4e45757),
-    ///         pre-encoded as the bytes32 mintRecipient/destinationCaller. HyperCore hook flows
-    ///         mint to this contract, which alone may execute the message and deposits the USDC
-    ///         into HyperCore for the receiver encoded in the hook data (see _startBridge).
+    /// @notice Circle's CctpForwarder on HyperEVM, pre-encoded as the bytes32
+    ///         mintRecipient/destinationCaller. HyperCore hook flows mint to this contract, which
+    ///         alone may execute the message and deposits the USDC into HyperCore for the receiver
+    ///         encoded in the hook data (see _startBridge).
+    ///         Mainnet: 0xb21D281DEdb17AE5B501F6AA8256fe38C4e45757
+    ///         Testnet: 0x02e39ECb8368b41bF68FF99ff351aC9864e5E2a2
     ///         https://developers.circle.com/cctp/references/hypercore-contract-addresses
+    // TESTNET-ONLY override: pinned to the HyperEVM testnet forwarder. DO NOT MERGE TO MAINNET.
     bytes32 internal constant HYPERCORE_CCTP_FORWARDER =
-        bytes32(uint256(uint160(0xb21D281DEdb17AE5B501F6AA8256fe38C4e45757)));
+        bytes32(uint256(uint160(0x02e39ECb8368b41bF68FF99ff351aC9864e5E2a2)));
 
-    /// @notice Circle's CctpForwarder on Stellar mainnet
-    ///         (CBZL2IH7F6BIDAA3WBNXYKIXSATJGMSW7K5P5MJ6STX5RXN47TZJDF5T), pre-encoded as the
-    ///         bytes32 mintRecipient/destinationCaller (the forwarder's raw 32-byte contract id).
+    /// @notice Circle's CctpForwarder on Stellar, pre-encoded as the bytes32
+    ///         mintRecipient/destinationCaller (the forwarder's raw 32-byte contract id).
     ///         A Stellar account can never be a CCTP mintRecipient directly: CCTP stores only the
     ///         raw 32 bytes without the strkey type prefix, so the protocol assumes the recipient
     ///         is a contract and USDC minted to a bare account is unrecoverable. All Stellar
     ///         deposits therefore mint to this forwarder, which alone may execute the message and
     ///         forwards the USDC to the strkey recipient carried in the hook data (see _startBridge).
     ///         Rotating the forwarder requires a facet upgrade.
+    ///         Mainnet: CBZL2IH7F6BIDAA3WBNXYKIXSATJGMSW7K5P5MJ6STX5RXN47TZJDF5T
+    ///                  (0x72bd20ff2f8281801bb05b7c29179026933256fabafeb13e94efd8ddbcfcf291)
+    ///         Testnet: CA66Q2WFBND6V4UEB7RD4SAXSVIWMD6RA4X3U32ELVFGXV5PJK4T4VSZ
     ///         https://developers.circle.com/cctp/references/stellar-contracts
+    // TESTNET-ONLY override: pinned to the Stellar testnet forwarder. DO NOT MERGE TO MAINNET.
     bytes32 internal constant STELLAR_CCTP_FORWARDER =
-        0x72bd20ff2f8281801bb05b7c29179026933256fabafeb13e94efd8ddbcfcf291;
+        0x3de86ac50b47eaf2840fe23e48179551660fd1072fba6f445d4a6bd7af4ab93e;
 
     bytes32 internal constant NAMESPACE =
         keccak256("com.lifi.facets.polymercctp");
